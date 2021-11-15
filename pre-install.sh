@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-install_disk=""
+install_disk=$1
 main_partition=""
 
 if [ "$EUID" -ne 0 ]
