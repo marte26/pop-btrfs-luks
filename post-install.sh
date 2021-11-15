@@ -43,3 +43,7 @@ done
 chroot /mnt
 
 mount -av
+
+kernelstub --add-options "rootflags=subvol=@"
+
+update-initramfs -c -k all
