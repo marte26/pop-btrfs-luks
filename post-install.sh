@@ -36,14 +36,9 @@ sed -i 's/splash/splash rootflags=subvol=@/' /mnt/@/boot/efi/loader/entries/Pop_
 umount -l /mnt
 
 mount -o defaults,subvol=@,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
+
 for i in /dev /dev/pts /proc /sys /run; do
   mount -B $i /mnt$i;
 done
 
-chroot /mnt
-
-mount -av
-
-kernelstub --add-options "rootflags=subvol=@"
-
-update-initramfs -c -k all
+chroot /mnt ./post-install-chroot.sh
