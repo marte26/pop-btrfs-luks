@@ -5,6 +5,6 @@ This [guide](https://mutschler.eu/linux/install-guides/pop-os-btrfs-21-04/#overv
 
 ## Installation
 * Boot the Pop!_OS Live ISO
-* Open a root terminal and run [`prepare-disk.sh <disk>`] 
+* Open a root terminal and run `prepare-disk.sh <disk>` 
 * Run the Pop!_OS installer and select custom partition layout and select the partitions
-* Once the installer has finished run [`post-installer.sh`]
+* Once the installer has finished run `post-installer.sh`
