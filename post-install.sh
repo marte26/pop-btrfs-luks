@@ -7,13 +7,13 @@ fi
 
 cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata
 
-wait 5
+sleep 3s
 
 mount -o subvolid=5,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
 # create root subvolume and move files
 btrfs subvolume create /mnt/@
-ls /mnt | grep -v /mnt/@ | xargs mv -t /mnt/@
+ls -d /mnt/* | grep -v /mnt/@ | xargs mv -t /mnt/@
 
 # create home subvolume and move files
 btrfs subvolume create /mnt/@home
