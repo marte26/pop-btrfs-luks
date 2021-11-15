@@ -37,8 +37,10 @@ umount -l /mnt
 
 mount -o defaults,subvol=@,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
+cp ./post-install-chroot.sh /mnt/
+
 for i in /dev /dev/pts /proc /sys /run; do
   mount -B $i /mnt$i;
 done
 
-chroot /mnt ./post-install-chroot.sh
+chroot /mnt /post-install-chroot.sh
