@@ -11,7 +11,7 @@ mount -o subvolid=5,ssd,noatime,space_cache,commit=120,compress=zstd,discard=asy
 
 # create root subvolume and move files
 btrfs subvolume create /mnt/@
-ls | grep -v /mnt/@ | xargs mv -t /mnt/@
+ls /mnt | grep -v /mnt/@ | xargs mv -t /mnt/@
 
 # create home subvolume and move files
 btrfs subvolume create /mnt/@home
