@@ -26,7 +26,7 @@ echo "UUID=$(blkid -s UUID -o value /dev/mapper/data-root)  /home  btrfs  defaul
 # adjust crypttab
 sed -i 's/luks/luks,discard/' /mnt/@/etc/crypttab
 
-mount /dev/disk/by-partlabel/EFI /mnt/@/boot/efi
+mount /dev/sda1 /mnt/@/boot/efi
 
 echo "timeout 3" >> /mnt/@/boot/efi/loader/loader.conf
 echo "console max" >> /mnt/@/boot/efi/loader/loader.conf
