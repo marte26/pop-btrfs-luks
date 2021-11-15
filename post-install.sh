@@ -7,6 +7,8 @@ fi
 
 cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata
 
+wait 5
+
 mount -o subvolid=5,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
 # create root subvolume and move files
