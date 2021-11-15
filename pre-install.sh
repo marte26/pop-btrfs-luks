@@ -9,9 +9,9 @@ if [ "$EUID" -ne 0 ]
 fi
 
 if [[ $install_disk == *"nvme"* ]]; then
-  main_partition=$install_disk+"p3"
+  main_partition=$install_disk"p3"
 else
-  main_partition=$install_disk+"3"
+  main_partition=$install_disk"3"
 fi
 
 # create gpt partition table
