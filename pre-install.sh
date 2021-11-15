@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 install_disk=$1
-ram=$(free -m | awk '/Mem:/ {print $2}')
-ram+=4598
+ram=$($(free -m | awk '/Mem:/ {print $2}')+4598)
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
