@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mount -av
+mount -a
 
 kernelstub --add-options "rootflags=subvol=@"
 
