@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 install_disk=$1
-ram=$(free -m | awk '/Mem:/ {print $2}')
-ram=$((ram+4598))
+ram=$(($(free -m | awk '/Mem:/ {print $2}') + 4598))
 
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
   exit
 fi
 
@@ -20,7 +19,7 @@ parted "$install_disk" mkpart primary fat32 4598MiB $ram"MiB"
 # create main partition
 parted "$install_disk" mkpart primary $ram"MiB" 100%
 
-# create labels
+# set flags and names
 parted "$install_disk" name 1 EFI
 parted "$install_disk" set 1 esp on
 parted "$install_disk" name 2 recovery
