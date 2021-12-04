@@ -9,6 +9,6 @@ WARNING! This script works on Pop!_OS 21.04 but it's terribly written so be very
 ## Installation
 
 * Boot the Pop!_OS Live ISO
-* Open a root terminal and run `prepare-disk.sh <disk>` 
-* Run the Pop!_OS installer and select custom partition layout and select the partitions
+* Open a root terminal and run `prepare-disk.sh <disk>`
+* Run the Pop!_OS installer, unlock the luks volume, select custom partition layout and select the partitions
 * Once the installer has finished run `post-installer.sh`
