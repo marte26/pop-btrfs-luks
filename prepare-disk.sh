@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 if ! [ -e "$install_disk" ] ; then
-   echo "Select disk not valid"
+   echo "Selected disk not valid"
    exit
 fi
 
