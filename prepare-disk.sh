@@ -2,8 +2,6 @@
 
 install_disk=$1
 ram=$(($(free -m | awk '/Mem:/ {print $2}') + 4598))
-password="1"
-check="2"
 
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root"
@@ -15,10 +13,7 @@ if ! [ -e "$install_disk" ] ; then
    exit
 fi
 
-while [ $password != $check ]; do
-  read -sr -p "Enter passphrase for disk encryption: " password
-  read -sr -p "Repeat passphrase: " check
-done
+password=$(get_passwd)
 
 # create gpt partition table
 parted "$install_disk" mklabel gpt
@@ -40,10 +35,10 @@ parted "$install_disk" set 3 swap on
 parted "$install_disk" name 4 POPOS
 
 # create encrypted partition
-echo -n | cryptsetup luksFormat /dev/disk/by-partlabel/POPOS -
+echo -n "$password" | cryptsetup luksFormat /dev/disk/by-partlabel/POPOS -
 
 # open encrypted partition
-echo -n | cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata -
+echo -n "$password" | cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata -
 
 # create physical volume
 pvcreate /dev/mapper/cryptdata
