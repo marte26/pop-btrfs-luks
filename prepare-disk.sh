@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ./utilities.sh
+
 install_disk=$1
 ram=$(($(free -m | awk '/Mem:/ {print $2}') + 4598))
 
