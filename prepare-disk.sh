@@ -18,23 +18,23 @@ fi
 password=$(get_passwd)
 
 # create gpt partition table
-parted "$install_disk" mklabel gpt 2>&1/dev/null
+parted "$install_disk" mklabel gpt >/dev/null 2>&1
 # create boot partition
-parted "$install_disk" mkpart primary fat32 2Mib 502Mib 2>&1/dev/null
+parted "$install_disk" mkpart primary fat32 2Mib 502Mib >/dev/null 2>&1
 # create pop os recovery partition
-parted "$install_disk" mkpart primary fat32 502MiB 4598MiB 2>&1/dev/null
+parted "$install_disk" mkpart primary fat32 502MiB 4598MiB >/dev/null 2>&1
 # create swap partition
-parted "$install_disk" mkpart primary fat32 4598MiB $ram"MiB" 2>&1/dev/null
+parted "$install_disk" mkpart primary fat32 4598MiB $ram"MiB" >/dev/null 2>&1
 # create main partition
-parted "$install_disk" mkpart primary $ram"MiB" 100% 2>&1/dev/null
+parted "$install_disk" mkpart primary $ram"MiB" 100% >/dev/null 2>&1
 
 # set flags and names
-parted "$install_disk" name 1 EFI 2>&1/dev/null
-parted "$install_disk" set 1 esp on 2>&1/dev/null
-parted "$install_disk" name 2 recovery 2>&1/dev/null
-parted "$install_disk" name 3 SWAP 2>&1/dev/null
-parted "$install_disk" set 3 swap on 2>&1/dev/null
-parted "$install_disk" name 4 POPOS 2>&1/dev/null
+parted "$install_disk" name 1 EFI >/dev/null 2>&1
+parted "$install_disk" set 1 esp on >/dev/null 2>&1
+parted "$install_disk" name 2 recovery >/dev/null 2>&1
+parted "$install_disk" name 3 SWAP >/dev/null 2>&1
+parted "$install_disk" set 3 swap on >/dev/null 2>&1
+parted "$install_disk" name 4 POPOS >/dev/null 2>&1
 
 # create encrypted partition
 echo -n "$password" | cryptsetup luksFormat /dev/disk/by-partlabel/POPOS -
