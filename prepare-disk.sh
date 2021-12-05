@@ -10,9 +10,9 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-if ! [ -e "$install_disk" ] ; then
-   echo "Selected disk not valid"
-   exit
+if ! [ -e "$install_disk" ]; then
+  echo "Selected disk not valid"
+  exit
 fi
 
 password=$(get_passwd)
@@ -29,12 +29,12 @@ parted "$install_disk" mkpart primary fat32 4598MiB $ram"MiB"
 parted "$install_disk" mkpart primary $ram"MiB" 100%
 
 # set flags and names
-parted "$install_disk" name 1 EFI
-parted "$install_disk" set 1 esp on
-parted "$install_disk" name 2 recovery
-parted "$install_disk" name 3 SWAP
-parted "$install_disk" set 3 swap on
-parted "$install_disk" name 4 POPOS
+parted "$install_disk" name 1 EFI >/dev/null
+parted "$install_disk" set 1 esp on >/dev/null
+parted "$install_disk" name 2 recovery >/dev/null
+parted "$install_disk" name 3 SWAP >/dev/null
+parted "$install_disk" set 3 swap on >/dev/null
+parted "$install_disk" name 4 POPOS >/dev/null
 
 # create encrypted partition
 echo -n "$password" | cryptsetup luksFormat /dev/disk/by-partlabel/POPOS -
