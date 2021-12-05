@@ -8,6 +8,11 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
+if ! [ -e "$install_disk" ] ; then
+   echo "Select disk not valid"
+   exit
+fi
+
 # create gpt partition table
 parted "$install_disk" mklabel gpt
 # create boot partition
