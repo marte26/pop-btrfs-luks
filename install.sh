@@ -35,7 +35,6 @@ FS="/cdrom/casper/filesystem.squashfs"
 REMOVE="/cdrom/casper/filesystem.manifest-remove"
 
 disk=$1
-#ram=$(($(free -m | awk '/Mem:/ {print $2}') + 4598))
 
 hostname="pop-os"
 username="pop-user"
@@ -53,7 +52,8 @@ if ! [ -e "$disk" ]; then
   exit
 fi
 
-password=$(get_passwd "Enter disk encryption password:" "Confirm password:")
+disk_password=$(get_passwd "Enter disk encryption password:" "Confirm disk password:")
+user_password=$(get_passwd "Enter password for user $username:" "Confirm user password:")
 
 # start the automated pop os installer
 distinst -s "$FS" \
@@ -65,10 +65,11 @@ distinst -s "$FS" \
   -t "$disk:gpt" \
   -n "$disk:primary:start:$(get_sectors 500):fat32:mount=/boot/efi:flags=esp" \
   -n "$disk:primary:$(get_sectors 500):$(get_sectors 4596):fat32:mount=/recovery" \
-  -n "$disk:primary:$(get_sectors 4596):end:enc=cryptdata,data,pass=$password" \
+  -n "$disk:primary:$(get_sectors 4596):end:enc=cryptdata,data,pass=$disk_password" \
   --logical "data:root:-$(get_sectors 4096):btrfs:mount=/" \
   --logical "data:swap:$(get_sectors 4096):swap" \
   --username "$username" \
+  --password "$user_password" \
   --profile_icon "" \
   --tz "$tz"
 
