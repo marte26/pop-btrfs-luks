@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 get_sectors() {
-  disk_part=$(echo -n "$disk" | sed "s/\/dev\///")
+  disk_part=$(printf "%s" "$disk" | sed "s/\/dev\///")
 
   sect_size="$(cat /sys/block/"$disk_part"/queue/physical_block_size)"
 
