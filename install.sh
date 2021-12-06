@@ -54,7 +54,7 @@ distinst -s "$FS" \
   --tz "$tz"
 
 # set name to easily identify luks partition
-parted "$disk" name 4 POPOS >/dev/null 2>&1
+parted "$disk" name 3 POPOS >/dev/null 2>&1
 
 cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata
 
