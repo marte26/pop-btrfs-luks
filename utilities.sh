@@ -7,12 +7,15 @@ check_exist() {
 }
 
 get_passwd() {
-  password="1"
-  check="2"
+  prompt=$1
+  confirm=$2
 
-  while [ $password != $check ]; do
-    read -sr -p "Enter passphrase for disk encryption: " password
-    read -sr -p "Repeat passphrase: " check
+  while true; do
+    read -sr -p "$prompt" password
+    printf "\n"
+    read -sr -p "$confirm" check
+    printf "\n"
+    [ "$password" != "$check" ] || break
   done
 
   printf "%s" "$password"
