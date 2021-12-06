@@ -5,7 +5,7 @@ get_sectors() {
 
   sect_size="$(cat /sys/block/"$disk_part"/queue/physical_block_size)"
 
-  ((sectors=$1*1048576/sect_size))
+  ((sectors = $1 * 1048576 / sect_size))
 
   printf "%s" "$sectors"
 }
@@ -25,7 +25,13 @@ get_passwd() {
     printf "\n"
     read -sr -p "$confirm" check
     printf "\n"
-    [ "$password" != "$check" ] || break
+    if [[ "$password" != "$check" ]]; then
+      printf "Passwords don't match\n"
+    elif [[ -z "$password" ]]; then
+      printf "Password cannot be empty\n"
+    else
+      break
+    fi
   done
 
   printf "%s" "$password"
