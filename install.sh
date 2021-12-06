@@ -79,7 +79,6 @@ sed -i 's/luks/luks,discard/' /mnt/@/etc/crypttab
 
 mount /dev/sda1 /mnt/@/boot/efi
 
-printf "timeout 3\n" >>/mnt/@/boot/efi/loader/loader.conf
 printf "console max\n" >>/mnt/@/boot/efi/loader/loader.conf
 
 sed -i 's/splash/splash rootflags=subvol=@/' /mnt/@/boot/efi/loader/entries/Pop_OS-current.conf
