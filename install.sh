@@ -7,7 +7,7 @@ get_sectors() {
 
   ((sectors=$1*1048576/sect_size))
 
-  echo -n "$sectors"
+  printf "%s" "$sectors"
 }
 
 source ./utilities.sh
@@ -25,12 +25,12 @@ language="en_US.UTF-8"
 tz="Etc/UTC"
 
 if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
+  printf "Please run as root\n"
   exit
 fi
 
 if ! [ -e "$disk" ]; then
-  echo "Selected disk not valid"
+  printf "Selected disk not valid\n"
   exit
 fi
 
@@ -72,15 +72,15 @@ mv /mnt/@/home/* /mnt/@home/
 
 # adjust fstab
 sed -i 's/btrfs  defaults/btrfs  defaults,subvol=@,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async/' /mnt/@/etc/fstab
-echo "UUID=$(blkid -s UUID -o value /dev/mapper/data-root)  /home  btrfs  defaults,subvol=@home,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async   0 0" >>/mnt/@/etc/fstab
+printf "UUID=%s  /home  btrfs  defaults,subvol=@home,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async   0 0\n" "$(blkid -s UUID -o value /dev/mapper/data-root)" >>/mnt/@/etc/fstab
 
 # adjust crypttab
 sed -i 's/luks/luks,discard/' /mnt/@/etc/crypttab
 
 mount /dev/sda1 /mnt/@/boot/efi
 
-echo "timeout 3" >>/mnt/@/boot/efi/loader/loader.conf
-echo "console max" >>/mnt/@/boot/efi/loader/loader.conf
+printf "timeout 3\n" >>/mnt/@/boot/efi/loader/loader.conf
+printf "console max\n" >>/mnt/@/boot/efi/loader/loader.conf
 
 sed -i 's/splash/splash rootflags=subvol=@/' /mnt/@/boot/efi/loader/entries/Pop_OS-current.conf
 

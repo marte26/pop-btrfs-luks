@@ -15,5 +15,5 @@ get_passwd() {
     read -sr -p "Repeat passphrase: " check
   done
 
-  echo -n "$password"
+  printf "%s" "$password"
 }
