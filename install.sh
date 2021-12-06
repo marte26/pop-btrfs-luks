@@ -31,8 +31,6 @@ get_passwd() {
   printf "%s" "$password"
 }
 
-source ./utilities.sh
-
 FS="/cdrom/casper/filesystem.squashfs"
 REMOVE="/cdrom/casper/filesystem.manifest-remove"
 
