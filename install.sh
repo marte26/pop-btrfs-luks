@@ -10,6 +10,27 @@ get_sectors() {
   printf "%s" "$sectors"
 }
 
+check_exist() {
+  while ! [ -e "$1" ]; do
+    sleep 0.5
+  done
+}
+
+get_passwd() {
+  prompt=$1
+  confirm=$2
+
+  while true; do
+    read -sr -p "$prompt" password
+    printf "\n"
+    read -sr -p "$confirm" check
+    printf "\n"
+    [ "$password" != "$check" ] || break
+  done
+
+  printf "%s" "$password"
+}
+
 source ./utilities.sh
 
 FS="/cdrom/casper/filesystem.squashfs"
@@ -34,7 +55,7 @@ if ! [ -e "$disk" ]; then
   exit
 fi
 
-password=$(get_passwd)
+password=$(get_passwd "Enter disk encryption password:" "Confirm password:")
 
 # start the automated pop os installer
 distinst -s "$FS" \
