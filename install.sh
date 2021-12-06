@@ -10,6 +10,10 @@ get_sectors() {
   printf "%s" "$sectors"
 }
 
+get_luks() {
+  printf "%s" "$(lsblk -fJ -o PARTUUID,FSTYPE "$disk" | jq -r '.blockdevices[] | select(.fstype == "crypto_LUKS") | .partuuid')"
+}
+
 check_exist() {
   while ! [ -e "$1" ]; do
     sleep 0.5
@@ -79,10 +83,7 @@ distinst -s "$FS" \
   --profile_icon "" \
   --tz "$tz"
 
-# set name to easily identify luks partition
-parted "$disk" name 3 POPOS >/dev/null 2>&1
-
-cryptsetup luksOpen /dev/disk/by-partlabel/POPOS cryptdata
+cryptsetup luksOpen "/dev/disk/by-partuuid/$(get_luks)" cryptdata
 
 check_exist /dev/mapper/data-root
 
