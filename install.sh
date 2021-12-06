@@ -50,7 +50,7 @@ distinst -s "$FS" \
   --logical "data:root:-$(get_sectors 4096):btrfs:mount=/" \
   --logical "data:swap:$(get_sectors 4096):swap" \
   --username "$username" \
-  --profile_icon "/usr/share/pixmaps/faces/penguin.png" \
+  --profile_icon "" \
   --tz "$tz"
 
 # set name to easily identify luks partition
