@@ -43,7 +43,7 @@ REMOVE="/cdrom/casper/filesystem.manifest-remove"
 DISK=$1
 
 hostname="pop-os"
-username="pop-user"
+username="user1"
 keyboard="us"
 language="en_US.UTF-8"
 tz="Etc/UTC"
@@ -87,11 +87,12 @@ distinst -s "$FS" \
   --logical "data:root:-$(get_sectors 4096):btrfs:mount=/" \
   --logical "data:swap:$(get_sectors 4096):swap" \
   --username "$username" \
+  --realname "$username" \
   --password "$user_password" \
-  --profile_icon "" \
+  --profile_icon "/usr/share/pixmaps/faces/penguin.png" \
   --tz "$tz"
 
-cryptsetup luksOpen "${DISK_PART}3" cryptdata
+printf "%s" "$disk_password" | cryptsetup luksOpen "${DISK_PART}3" cryptdata
 
 check_exist /dev/mapper/data-root
 
