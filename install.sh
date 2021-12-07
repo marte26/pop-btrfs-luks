@@ -10,7 +10,7 @@ get_sectors() {
   printf "%s" "$sectors"
 }
 
-check_exist() {
+wait_until_exist() {
   while ! [ -e "$1" ]; do
     sleep 0.5
   done
@@ -92,7 +92,7 @@ distinst -s "$FS" \
 
 printf "%s" "$disk_password" | cryptsetup luksOpen "${DISK_PART}3" cryptdata
 
-check_exist /dev/mapper/data-root
+wait_until_exist "/dev/mapper/data-root"
 
 mount -o subvolid=5,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
