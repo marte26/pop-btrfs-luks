@@ -95,7 +95,7 @@ distinst -s "$FS" \
   --profile_icon "" \
   --tz "$tz"
 
-cryptsetup luksOpen "/dev/disk/by-partuuid/${DISK_PART}3" cryptdata
+cryptsetup luksOpen "/dev/${DISK_PART}3" cryptdata
 
 check_exist /dev/mapper/data-root
 
@@ -116,7 +116,7 @@ printf "UUID=%s  /home  btrfs  defaults,subvol=@home,ssd,noatime,space_cache,com
 # adjust crypttab
 sed -i 's/luks/luks,discard/' /mnt/@/etc/crypttab
 
-mount /dev/sda1 /mnt/@/boot/efi
+mount "/dev/${DISK_PART}1" /mnt/@/boot/efi
 
 printf "console max\n" >>/mnt/@/boot/efi/loader/loader.conf
 
