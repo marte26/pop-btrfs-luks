@@ -22,9 +22,7 @@ get_passwd() {
 
   while true; do
     read -sr -p "$prompt" password
-    printf "\n"
     read -sr -p "$confirm" check
-    printf "\n"
     if [[ "$password" != "$check" ]]; then
       printf "Passwords don't match\n"
     elif [[ -z "$password" ]]; then
