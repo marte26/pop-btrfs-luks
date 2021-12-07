@@ -83,9 +83,9 @@ distinst -s "$FS" \
   -t "$DISK:gpt" \
   -n "$DISK:primary:start:$(get_sectors 500):fat32:mount=/boot/efi:flags=esp" \
   -n "$DISK:primary:$(get_sectors 500):$(get_sectors 4596):fat32:mount=/recovery" \
-  -n "$DISK:primary:$(get_sectors 4596):end:enc=cryptdata,data,pass=$disk_password" \
-  --logical "data:root:-$(get_sectors 4096):btrfs:mount=/" \
-  --logical "data:swap:$(get_sectors 4096):swap" \
+  -n "$DISK:primary:$(get_sectors 4596):-$(get_sectors 4096):enc=cryptdata,data,pass=$disk_password" \
+  --logical "data:root:end:btrfs:mount=/" \
+  -n "$DISK:primary:-$(get_sectors 4096):end:swap" \
   --username "$username" \
   --realname "$username" \
   --password "$user_password" \
