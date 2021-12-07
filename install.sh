@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 get_sectors() {
-  disk_part=$(printf "%s" "$disk" | sed "s/\/dev\///")
+  DISK_ID=$(printf "%s" "$DISK" | sed "s/\/dev\///")
 
-  sect_size="$(cat /sys/block/"$disk_part"/queue/physical_block_size)"
+  sect_size="$(cat /sys/block/"$DISK_ID"/queue/physical_block_size)"
 
   ((sectors = $1 * 1048576 / sect_size))
 
@@ -11,7 +11,7 @@ get_sectors() {
 }
 
 get_luks() {
-  printf "%s" "$(lsblk -fJ -o PARTUUID,FSTYPE "$disk" | jq -r '.blockdevices[] | select(.fstype == "crypto_LUKS") | .partuuid')"
+  printf "%s" "$(lsblk -fJ -o PARTUUID,FSTYPE "$DISK" | jq -r '.blockdevices[] | select(.fstype == "crypto_LUKS") | .partuuid')"
 }
 
 check_exist() {
@@ -44,7 +44,7 @@ get_passwd() {
 FS="/cdrom/casper/filesystem.squashfs"
 REMOVE="/cdrom/casper/filesystem.manifest-remove"
 
-disk=$1
+DISK=$1
 
 hostname="pop-os"
 username="pop-user"
@@ -54,12 +54,24 @@ tz="Etc/UTC"
 
 if [ "$EUID" -ne 0 ]; then
   printf "Please run as root\n"
-  exit
+  exit 1
 fi
 
-if ! [ -e "$disk" ]; then
-  printf "Selected disk not valid\n"
-  exit
+if ! [ "${1}" ]; then
+  printf "Must provide a block device as an argument\n"
+  exit 1
+fi
+
+if ! [ -b "${1}" ]; then
+  printf "Provided argument is not a block device\n"
+  exit 1
+fi
+
+# If the disk path ends with a number, add a p.
+if [ "${1: -1}" -eq "${1: -1}" ]; then
+  DISK_PART="${1}p"
+else
+  DISK_PART="${1}"
 fi
 
 disk_password=$(get_passwd "Enter disk encryption password:" "Confirm disk password:")
@@ -71,11 +83,11 @@ distinst -s "$FS" \
   -h "$hostname" \
   -k "$keyboard" \
   -l "$language" \
-  -b "$disk" \
-  -t "$disk:gpt" \
-  -n "$disk:primary:start:$(get_sectors 500):fat32:mount=/boot/efi:flags=esp" \
-  -n "$disk:primary:$(get_sectors 500):$(get_sectors 4596):fat32:mount=/recovery" \
-  -n "$disk:primary:$(get_sectors 4596):end:enc=cryptdata,data,pass=$disk_password" \
+  -b "$DISK" \
+  -t "$DISK:gpt" \
+  -n "$DISK:primary:start:$(get_sectors 500):fat32:mount=/boot/efi:flags=esp" \
+  -n "$DISK:primary:$(get_sectors 500):$(get_sectors 4596):fat32:mount=/recovery" \
+  -n "$DISK:primary:$(get_sectors 4596):end:enc=cryptdata,data,pass=$disk_password" \
   --logical "data:root:-$(get_sectors 4096):btrfs:mount=/" \
   --logical "data:swap:$(get_sectors 4096):swap" \
   --username "$username" \
@@ -83,7 +95,7 @@ distinst -s "$FS" \
   --profile_icon "" \
   --tz "$tz"
 
-cryptsetup luksOpen "/dev/disk/by-partuuid/$(get_luks)" cryptdata
+cryptsetup luksOpen "/dev/disk/by-partuuid/${DISK_PART}3" cryptdata
 
 check_exist /dev/mapper/data-root
 
