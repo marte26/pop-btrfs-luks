@@ -10,10 +10,6 @@ get_sectors() {
   printf "%s" "$sectors"
 }
 
-get_luks() {
-  printf "%s" "$(lsblk -fJ -o PARTUUID,FSTYPE "$DISK" | jq -r '.blockdevices[] | select(.fstype == "crypto_LUKS") | .partuuid')"
-}
-
 check_exist() {
   while ! [ -e "$1" ]; do
     sleep 0.5
