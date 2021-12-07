@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# ----- User-defined variables -----
+hostname="pop-os"
+username="user1"
+keyboard="us"
+language="en_US.UTF-8"
+tz="Etc/UTC"
+# ----------------------------------
+
+# ------------ Functions -----------
 get_sectors() {
   DISK_ID=$(printf "%s" "$DISK" | sed "s/\/dev\///")
 
@@ -34,17 +43,13 @@ get_passwd() {
 
   printf "%s" "$password"
 }
+# ----------------------------------
 
+# ---------- Script start ----------
 FS="/cdrom/casper/filesystem.squashfs"
 REMOVE="/cdrom/casper/filesystem.manifest-remove"
 
 DISK=$1
-
-hostname="pop-os"
-username="user1"
-keyboard="us"
-language="en_US.UTF-8"
-tz="Etc/UTC"
 
 if [ "$EUID" -ne 0 ]; then
   printf "Please run as root\n"
@@ -87,7 +92,7 @@ distinst -s "$FS" \
   --username "$username" \
   --realname "$username" \
   --password "$user_password" \
-  --profile_icon "/usr/share/pixmaps/faces/penguin.png" \
+  --profile_icon "" \
   --tz "$tz"
 
 printf "%s" "$disk_password" | cryptsetup luksOpen "${DISK_PART}3" cryptdata
