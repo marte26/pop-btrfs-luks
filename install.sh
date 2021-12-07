@@ -46,11 +46,8 @@ get_passwd() {
 # ----------------------------------
 
 # ---------- Script start ----------
-FS="/cdrom/casper/filesystem.squashfs"
-REMOVE="/cdrom/casper/filesystem.manifest-remove"
 
-DISK=$1
-
+# ----- checks -----
 if [ "$EUID" -ne 0 ]; then
   printf "Please run as root\n"
   exit 1
@@ -72,6 +69,11 @@ if [ "${1: -1}" -eq "${1: -1}" ]; then
 else
   DISK_PART="${1}"
 fi
+# ------------------
+
+FS="/cdrom/casper/filesystem.squashfs"
+REMOVE="/cdrom/casper/filesystem.manifest-remove"
+DISK=$1
 
 disk_password=$(get_passwd "Enter disk encryption password:" "Confirm disk password:")
 user_password=$(get_passwd "Enter password for user $username:" "Confirm user password:")
@@ -95,10 +97,9 @@ distinst -s "$FS" \
   --profile_icon "" \
   --tz "$tz"
 
+# unlock cryptdata and mount data-root
 printf "%s" "$disk_password" | cryptsetup luksOpen "${DISK_PART}3" cryptdata
-
 wait_until_exist "/dev/mapper/data-root"
-
 mount -o subvolid=5,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
 # create root subvolume and move files
@@ -113,21 +114,24 @@ mv /mnt/@/home/* /mnt/@home/
 sed -i 's/btrfs  defaults/btrfs  defaults,subvol=@,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async/' /mnt/@/etc/fstab
 printf "UUID=%s  /home  btrfs  defaults,subvol=@home,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async   0 0\n" "$(blkid -s UUID -o value /dev/mapper/data-root)" >>/mnt/@/etc/fstab
 
-# adjust crypttab
+# add discard option to crypttab for trim on ssd
 sed -i 's/luks/luks,discard/' /mnt/@/etc/crypttab
 
 mount "${DISK_PART}1" /mnt/@/boot/efi
 
-printf "console max\n" >>/mnt/@/boot/efi/loader/loader.conf
-
+# adjust systemd-boot Pop_OS entry to use correct btrfs subvolume
 sed -i 's/splash/splash rootflags=subvol=@/' /mnt/@/boot/efi/loader/entries/Pop_OS-current.conf
 
+# remount data-root with correct options
 umount -l /mnt
-
 mount -o defaults,subvol=@,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async /dev/mapper/data-root /mnt
 
-cp ./chroot.sh /mnt/
+# copy script to run as chroot
+cp ./run_as_chroot.sh /mnt/
 
+# chroot stuff
 for i in dev dev/pts proc sys run; do sudo mount -B /$i /mnt/$i; done
+chroot /mnt /run_as_chroot.sh
 
-chroot /mnt /chroot.sh
+# remove script
+rm /mnt/run_as_chroot.sh
