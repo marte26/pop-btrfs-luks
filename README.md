@@ -2,9 +2,9 @@
 
 Script to install Pop!_OS with BTRFS and LUKS
 
-This [guide](https://mutschler.eu/linux/install-guides/pop-os-btrfs-21-04/#overview) in script form
+WARNING! This script was tested on Pop!_OS 21.04 but it's in development so there could be bugs
 
-WARNING! This script works weas tested Pop!_OS 21.04 but it's in development so bugs could arise
+Feedback is highly appreciated
 
 ## Installation
 
@@ -14,3 +14,7 @@ WARNING! This script works weas tested Pop!_OS 21.04 but it's in development so 
 * Run `./install.sh <disk>`
 * Enter disk encryption and user password
 * Reboot once the script has finished running
+
+## Credits
+
+This [guide](https://mutschler.eu/linux/install-guides/pop-os-btrfs-21-04/#overview)
